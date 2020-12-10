@@ -39,10 +39,12 @@ def command_parser(command_line):
     command = command_line[:3]
     return command, number
     
-print(acc_do(10, data[0][4:], 0))
+def count_duplicates(sequence_of_indices):
+    # takes the list of indices visited
+    return len(sequence_of_indices) - list(set(sequence_of_indices))
 
-print(jmp_do(data[1][4:], 1))
+def calc_acc_one_loop():
+    indices = []
 
-print(nop_do(2))
 
-print(command_parser(data[0]))
+
