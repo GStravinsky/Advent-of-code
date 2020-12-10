@@ -41,10 +41,30 @@ def command_parser(command_line):
     
 def count_duplicates(sequence_of_indices):
     # takes the list of indices visited
-    return len(sequence_of_indices) - list(set(sequence_of_indices))
+    return len(sequence_of_indices) - len(set(sequence_of_indices))
 
-def calc_acc_one_loop():
+def calc_acc_one_loop(data):
     indices = []
+    no_duplicates = 0
+    index = 0
+    acc = 0
+    while no_duplicates == 0:
+      command, number = command_parser(data[index])
+      if command == "acc":
+        acc, index = acc_do(acc, number, index)
+
+      elif command == "jmp":
+        index = jmp_do(number, index)
+    
+      elif command == "nop":
+        index = nop_do(index)
+      
+      indices.append(index)       
+      no_duplicates = count_duplicates(indices)
+     
+    return acc
+
+print(calc_acc_one_loop(data))
 
 
 
