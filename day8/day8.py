@@ -61,10 +61,28 @@ def calc_acc_one_loop(data):
       
       indices.append(index)       
       no_duplicates = count_duplicates(indices)
-     
-    return acc
+    print(acc)     
+    return acc, no_duplicates
 
-print(calc_acc_one_loop(data))
+def jmp_to_nop(data, index):
+  data[index] = "nop%s" %data[index][3:] 
+  return data
 
+ 
+print(len(data)) 
+def fix_loop(data):
+  acc = 0
+  for i in range(len(data)):
+    print(acc)
+    command, number = command_parser(data[i])
+    print(command, number)
+    if command == "jmp":
+       data = jmp_to_nop(data,i)
+       acc, no_duplicates = calc_acc_one_loop(data)
+       if no_duplicates == 0:
+        break
+  return acc, i
 
-
+data2 = jmp_to_nop(data,3)
+print(data2[3])
+print(calc_acc_one_loop(data2))
