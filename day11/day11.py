@@ -37,7 +37,7 @@ def summarise_neighbours(data, row, column):
         neighbours.append(data[row,column+1])
         neighbours.append(data[row+1,column+1])
         neighbours.append(data[row+1,column])
-    elif row !=0 and column == (np.shape(data)[1]-1):
+    elif row !=0 and row != (np.shape(data)[0]-1) and column == (np.shape(data)[1]-1):
         neighbours.append(data[row+1,column])
         neighbours.append(data[row+1,column-1])
         neighbours.append(data[row,column-1])
@@ -47,7 +47,7 @@ def summarise_neighbours(data, row, column):
         neighbours.append(data[row-1,column])
         neighbours.append(data[row-1,column+1])
         neighbours.append(data[row,column+1])
-    elif row == (np.shape(data)[0]-1) and column != 0:
+    elif row == (np.shape(data)[0]-1) and column != 0 and column != (np.shape(data)[1]-1):
         neighbours.append(data[row,column-1])
         neighbours.append(data[row-1,column-1])
         neighbours.append(data[row-1,column])
