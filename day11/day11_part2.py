@@ -1,4 +1,4 @@
-data = open("data.txt")
+data = open("small_data.txt")
 data = data.read()
 data = data.split("\n")
 import numpy as np
@@ -66,7 +66,37 @@ def summarise_neighbours(data, row, column):
     count_neighbours = Counter(neighbours)
     return count_neighbours[1]
 
+def get_diagonal_number(data, row, column):
+    shape = np.shape(data)
+    min_k = -row
+    max_k = min_k + shape[1] - 1
+    k_range = range(min_k, max_k)
+    k = k_range[column]
 
+    return k 
+
+def get_visible_occupied_seats(data, row, column):
+    neighbours = 0
+    # get vertical
+    vertical = data[:,column]
+    # get horizontal
+    horizontal = data[row,:]
+    # get diagonals
+    k = get_diagonal_number(data, row, column)
+    diagonal_left = data.diagonal(k)
+    diagonal_right = np.fliplr(data).diagonal(k)  
+
+    if 1 in vertical[:row]:
+        neighbours += 1
+    if 1 in vertical[row+1:]:
+       neighbours += 1
+    if 1 in horizontal[:column]:
+        neighbours += 1
+    if 1 in horizontal[column+1:]:
+        neighbours += 1
+
+
+print(np.diag(data2, 2))    
 def one_iteration(data):
     data_new = np.copy(data)
     for row_n, row in enumerate(data):
@@ -95,10 +125,6 @@ def all_iterations(data):
     data = np.copy(data_new)
   return count, data_new
 
-data,count = all_iterations(data2)
-
-print(data)
-#count_2291, data_2291 = all_iterations(data2,2291)
 #count_2061, data_2061 = all_iterations(data2,2061)
 
 #np.save("data_2291", data_2291)
