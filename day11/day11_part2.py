@@ -69,7 +69,7 @@ def summarise_neighbours(data, row, column):
 def get_diagonal_number(data, row, column):
     shape = np.shape(data)
     min_k = -row
-    max_k = min_k + shape[1] - 1
+    max_k = min_k + shape[1]
     k_range = range(min_k, max_k)
     k = k_range[column]
 
@@ -79,24 +79,53 @@ def get_visible_occupied_seats(data, row, column):
     neighbours = 0
     # get vertical
     vertical = data[:,column]
+    vertical_fliped = np.copy(vertical)[::-1]
     # get horizontal
     horizontal = data[row,:]
+    horizontal_fliped = np.copy(horizontal)[::-1]
     # get diagonals
     k = get_diagonal_number(data, row, column)
-    diagonal_left = data.diagonal(k)
-    diagonal_right = np.fliplr(data).diagonal(k)  
+    diagonal = data.diagonal(k)
+    diagonal_fliped = np.copy(diagonal)[::-1]
+    # horizontal flip - the counting stops from the top
+    diagonal_inv = np.fliplr(data).diagonal(k) 
+    diagonal_inv_fliped = np.copy(diagonal_inv)[::-1]  
+    
 
-    if 1 in vertical[:row]:
-        neighbours += 1
-    if 1 in vertical[row+1:]:
-       neighbours += 1
-    if 1 in horizontal[:column]:
-        neighbours += 1
-    if 1 in horizontal[column+1:]:
-        neighbours += 1
+    # creating a list of numpy arrays
+    if len(vertical_fliped[-row:]) == np.shape(data)[1] and len(horizontal_fliped[-column:]) != np.shape(data)[0]: 
+        lines = [vertical[row+1:], horizontal_fliped[-column:], horizontal[column+1:], 
+             diagonal_fliped[-column:], diagonal[column+1:], diagonal_inv_fliped[-row:], diagonal_inv[row+1:]]
+    
+    elif len(horizontal_fliped[-column:]) == np.shape(data)[0] and len(vertical_fliped[-row:]) != np.shape(data)[1]: 
+        lines = [vertical_fliped[-row:], vertical[row+1:], horizontal[column+1:], 
+             diagonal_fliped[-column:], diagonal[column+1:], diagonal_inv_fliped[-row:], diagonal_inv[row+1:]]
+    
+    elif len(horizontal_fliped[-column:]) == np.shape(data)[0] and len(vertical_fliped[-row:]) == np.shape(data)[1]: 
+        lines = [vertical[row+1:], horizontal[column+1:], diagonal[column+1:], diagonal_inv[row+1:]]
 
+    else:
+        lines = [vertical_fliped[-row:], vertical[row+1:], horizontal_fliped[-column:], horizontal[column+1:], 
+             diagonal_fliped[-column:], diagonal[column+1:], diagonal_inv_fliped[-row:], diagonal_inv[row+1:]]
+    
+    print(lines)
+    for line in lines:
+        print(len(line))
+        index = 0
+        while True:
+            if index >= len(line) or line[index] == 0:
+                break
+            elif line[index] == 1:
+                neighbours += 1
+                break
+            elif line[index] == ".":
+                index += 1
+                  
+    return neighbours 
 
-print(np.diag(data2, 2))    
+print(data2)
+print(get_visible_occupied_seats(data2, 9, 9))
+
 def one_iteration(data):
     data_new = np.copy(data)
     for row_n, row in enumerate(data):
