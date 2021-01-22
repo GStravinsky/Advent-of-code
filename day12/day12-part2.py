@@ -5,24 +5,31 @@ data = data.split("\n")
 
 from collections import defaultdict
 
-def right(value, current, directions):
+def right(value, waypoint_position, directions):
     # takes d - command, current direction and the list of directions
-    # returns the new direction
-    index = (directions.index(current) + (value/90))%4
-    new_direction = directions[int(index)]
-    return new_direction
+    # returns the new directions in a dictionary
+    rotation = int(value/90)
+    index = [(directions.index(country) + rotation)%4 for country in waypoint_position.keys()] 
+    new_directions = {directions[i]: value for i, value in zip(index, waypoint_position.values())}
+    return waypoint_position
+
+print(right(90,{"E":1, "N":10}, ["E", "S", "W", "N"]))
     
 
-def left(value, current, directions):
-    index = (directions.index(current) - (value/90))
-    new_direction = directions[int(index)]
-    return new_direction
+def left(value, waypoint_position, directions):
+    rotation = int(value/90)
+    index = [(directions.index(country) - rotation)%4 for country in waypoint_position.keys()]
+    new_directions = {directions[i]: value for i, value in zip(index, waypoint_position.values())}
+    return new_directions
 
+
+print(left(90,{"E":1, "N":10}, ["E", "S", "W", "N"]))
 def manhattan(data):
     
-    travel_log = defaultdict(int)
+    waypoint_travel_log = defaultdict(int)
     
-    current = "E"
+    waypoint_travel_log["N"] = 1
+    waypoint_travel_log["E"] = 10
     directions = ["E", "S", "W", "N"]
 
     for d in data:
@@ -30,13 +37,13 @@ def manhattan(data):
         value = int(d[1:])
 
         if symbol == "E":
-            travel_log["E"]  += value
+            waypoint_travel_log["E"]  += value
         elif symbol == "S":
-            travel_log["S"]  += value
+            waypoint_travel_log["N"]  -= value
         elif symbol == "W":
-            travel_log["W"]  += value
+            waypoint_travel_log["E"]  -= value
         elif symbol == "N":
-            travel_log["N"]  += value
+            waypoint_travel_log["N"]  += value
 
         elif symbol == "R":
             current = right(value, current, directions)
